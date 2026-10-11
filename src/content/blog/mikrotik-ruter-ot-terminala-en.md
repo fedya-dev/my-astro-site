@@ -1,7 +1,7 @@
 ---
 title: Managing a MikroTik Router from the Terminal
 seoTitle: 'Managing MikroTik RouterOS via the Terminal (CLI)'
-description: 'Learn how to configure and manage your MikroTik router through the CLI/terminal. A practical guide covering network configuration, firewall rules, backups, upgrades, and maintenance.'
+description: 'Learn how to configure and manage your MikroTik router through the CLI/terminal...'
 pubDate: 2026-09-26T14:21:37.902Z
 category: Linux
 tags: [mikrotik, routeros, cli, networking, terminal, sysadmin]
@@ -12,6 +12,7 @@ level: Beginner
 duration: '15 min'
 heroImage: '/images/mikrotik-ruter-ot-terminala.webp'
 heroImageAlt: 'MikroTik Terminal CLI Interface'
+lang: en
 ---
 
 Graphical tools such as WinBox and WebFig are highly convenient, but the real power and flexibility of **MikroTik RouterOS** become apparent once you move to the command-line interface (CLI). In professional network administration, the terminal offers greater efficiency, automation capabilities, and fast troubleshooting during critical incidents.
