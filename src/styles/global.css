@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 /* ─────────────────────────────────────────────
-   Root variables & base
-───────────────────────────────────────────── */
+ *  Root variables & base
+ ─ *──────────────────────────────────────────── */
 :root {
   font-family: Manrope, system-ui, sans-serif;
   color-scheme: dark;
@@ -70,8 +70,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Layout shell
-───────────────────────────────────────────── */
+ *  Layout shell
+ ─ *──────────────────────────────────────────── */
 .site-shell {
   max-width: var(--max);
   width: calc(100% - 48px);
@@ -79,8 +79,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Header
-───────────────────────────────────────────── */
+ *  Header
+ ─ *──────────────────────────────────────────── */
 .site-header {
   height: 94px;
   display: flex;
@@ -179,8 +179,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Shared text utilities
-───────────────────────────────────────────── */
+ *  Shared text utilities
+ ─ *──────────────────────────────────────────── */
 .eyebrow,
 .card-meta,
 .tag,
@@ -209,8 +209,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Hero
-───────────────────────────────────────────── */
+ *  Hero
+ ─ *──────────────────────────────────────────── */
 .hero {
   padding: 94px 0 82px;
   display: grid;
@@ -279,6 +279,7 @@ h1, h2, h3, p {
 }
 
 .button:hover {
+  color: var(--accent-ink);
   transform: translateY(-1px);
 }
 
@@ -301,7 +302,7 @@ h1, h2, h3, p {
   background: radial-gradient(
     circle at 70% 30%,
     color-mix(in srgb, var(--accent) 16%, var(--surface)),
-    var(--surface) 62%
+                              var(--surface) 62%
   );
   overflow: hidden;
   display: flex;
@@ -358,8 +359,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Sections
-───────────────────────────────────────────── */
+ *  Sections
+ ─ *──────────────────────────────────────────── */
 .section {
   padding: 55px 0 78px;
   border-top: 1px solid var(--line);
@@ -386,8 +387,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Article & project grids / cards
-───────────────────────────────────────────── */
+ *  Article & project grids / cards
+ ─ *──────────────────────────────────────────── */
 .article-grid,
 .project-grid {
   display: grid;
@@ -483,8 +484,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   About strip
-───────────────────────────────────────────── */
+ *  About strip
+ ─ *──────────────────────────────────────────── */
 .about-strip {
   display: grid;
   grid-template-columns: 0.65fr 1.35fr;
@@ -508,8 +509,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Page intro & search
-───────────────────────────────────────────── */
+ *  Page intro & search
+ ─ *──────────────────────────────────────────── */
 .page-intro {
   padding: 75px 0 45px;
   max-width: 760px;
@@ -552,8 +553,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Article page + TOC layout
-───────────────────────────────────────────── */
+ *  Article page + TOC layout
+ ─ *──────────────────────────────────────────── */
 .article-layout-grid {
   max-width: 1100px;
   width: calc(100% - 48px);
@@ -776,8 +777,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Footer
-───────────────────────────────────────────── */
+ *  Footer
+ ─ *──────────────────────────────────────────── */
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -835,8 +836,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   404
-───────────────────────────────────────────── */
+ *  404
+ ─ *──────────────────────────────────────────── */
 .not-found {
   text-align: center;
   padding: 120px 0;
@@ -859,8 +860,8 @@ h1, h2, h3, p {
 }
 
 /* ─────────────────────────────────────────────
-   Accessibility
-───────────────────────────────────────────── */
+ *  Accessibility
+ ─ *──────────────────────────────────────────── */
 :where(a, button, input, textarea, select):focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 4px;
@@ -889,8 +890,8 @@ main:focus {
 }
 
 /* ─────────────────────────────────────────────
-   Responsive
-───────────────────────────────────────────── */
+ *  Responsive
+ ─ *──────────────────────────────────────────── */
 @media (max-width: 1000px) {
   .article-layout-grid {
     grid-template-columns: 190px minmax(0, 780px);
@@ -1093,9 +1094,9 @@ main:focus {
 }
 
 /* ─────────────────────────────────────────────
-   Design preset: Ocean
-   (Midnight remains the default)
-───────────────────────────────────────────── */
+ *  Design preset: Ocean
+ *  (Midnight remains the default)
+ ─ *──────────────────────────────────────────── */
 :root[data-design="ocean"] {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   color-scheme: light;
@@ -1205,15 +1206,15 @@ main:focus {
   border: 0;
   border-radius: 34px;
   background:
-    radial-gradient(circle at 18% 20%, #4dd5b633, transparent 32%),
-    linear-gradient(145deg, #dceefa, #d8f7e9 80%);
+  radial-gradient(circle at 18% 20%, #4dd5b633, transparent 32%),
+  linear-gradient(145deg, #dceefa, #d8f7e9 80%);
   min-height: 360px;
 }
 
 :root[data-design="ocean"][data-theme="dark"] .hero-visual {
   background:
-    radial-gradient(circle at 18% 20%, #55d6a533, transparent 32%),
-    linear-gradient(145deg, #123d5a, #104b43 90%);
+  radial-gradient(circle at 18% 20%, #55d6a533, transparent 32%),
+  linear-gradient(145deg, #123d5a, #104b43 90%);
 }
 
 :root[data-design="ocean"] .orbit {
