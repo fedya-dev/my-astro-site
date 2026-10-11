@@ -1,0 +1,7 @@
+{
+  "type": "blog",
+  "defaultLang": "bg",
+  "title": "Fedya's site",
+  "site": "http://localhost:4321",
+  "design": "midnight"
+}

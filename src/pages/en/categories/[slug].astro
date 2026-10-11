@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleCard from '../../../components/ArticleCard.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { slugify } from '../../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection(
+    'blog',
+    ({ data }) => !data.draft && data.lang === 'en',
+  );
+  const categories = [...new Set(posts.map((post) => post.data.category))];
+
+  return categories.map((category) => ({
+    params: { slug: slugify(category) },
+    props: {
+      category,
+      posts: posts
+        .filter((post) => post.data.category === category)
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
+
+const { category, posts } = Astro.props;
+---
+
+<BaseLayout title={category} description={`Articles in ${category}.`} lang="en" active="blog">
+  <header class="page-intro">
+    <a class="back-link" href="/en/categories/">← All categories</a>
+    <span class="eyebrow">Category</span>
+    <h1>{category}</h1>
+  </header>
+  <section class="section">
+    <div class="article-grid">
+      {posts.map((post) => <ArticleCard post={post} lang="en" />)}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,30 @@
+<script>
+const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+const nav = document.querySelector<HTMLElement>('#primary-navigation');
+
+function setMenu(open: boolean) {
+  nav?.classList.toggle('is-open', open);
+  toggle?.setAttribute('aria-expanded', String(open));
+  if (toggle) {
+    const isBulgarian = document.documentElement.lang === 'bg';
+    toggle.setAttribute('aria-label', open
+      ? (isBulgarian ? 'Затвори менюто' : 'Close menu')
+      : (isBulgarian ? 'Отвори менюто' : 'Open menu'));
+  }
+}
+
+toggle?.addEventListener('click', () => {
+  setMenu(!(nav?.classList.contains('is-open') ?? false));
+});
+
+nav?.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => setMenu(false));
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && nav?.classList.contains('is-open')) {
+    setMenu(false);
+    toggle?.focus();
+  }
+});
+</script>

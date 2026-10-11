@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import Navigation from '../components/Navigation.astro';
+import { siteConfig, type Locale } from '../lib/site';
+const { title, seoTitle, description = '', lang = 'bg', active = '', heroImage, heroImageAlt = '', ogType = 'website', publishedTime, modifiedTime, author, alternateUrls = [], structuredData } = Astro.props as { title: string; seoTitle?: string; description?: string; lang?: Locale; active?: string; heroImage?: string; heroImageAlt?: string; ogType?: 'website' | 'article'; publishedTime?: Date; modifiedTime?: Date; author?: string; alternateUrls?: { lang: Locale; url: string }[]; structuredData?: Record<string, unknown> };
+const canonical = new URL(Astro.url.pathname, siteConfig.site).href;
+const pageTitle = seoTitle || (title === siteConfig.title ? title : `${title} — ${siteConfig.title}`);
+const socialImage = heroImage ? new URL(heroImage, siteConfig.site).href : undefined;
+const languagePathMap: Record<string, string> = {
+  '/': '/en/', '/en/': '/',
+  '/blog/': '/en/blog/', '/en/blog/': '/blog/',
+  '/about/': '/en/about/', '/en/about/': '/about/',
+  '/categories/': '/en/categories/', '/en/categories/': '/categories/',
+  '/tags/': '/en/tags/', '/en/tags/': '/tags/',
+};
+const mappedAlternatePath = languagePathMap[Astro.url.pathname];
+const staticAlternates = mappedAlternatePath
+  ? [{ lang, url: canonical }, { lang: lang === 'bg' ? 'en' as const : 'bg' as const, url: new URL(mappedAlternatePath, siteConfig.site).href }]
+  : [];
+const pageAlternates = alternateUrls.length ? alternateUrls : staticAlternates;
+const safeStructuredData = structuredData ? JSON.stringify(structuredData).replace(/</g, '\\u003c') : undefined;
+const websiteData = !structuredData && (Astro.url.pathname === '/' || Astro.url.pathname === '/en/')
+  ? JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: siteConfig.title, url: canonical, inLanguage: lang }).replace(/</g, '\\u003c')
+  : undefined;
+---
+<!doctype html>
+<html lang={lang} data-theme={siteConfig.design === 'editorial' ? 'light' : 'dark'} data-design={siteConfig.design ?? 'midnight'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {pageAlternates.map((alternate) => <link rel="alternate" hreflang={alternate.lang} href={alternate.url} />) }
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={lang === 'bg' ? 'bg_BG' : 'en_GB'} />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+    {author && <meta property="article:author" content={author} />}
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    {socialImage && <meta property="og:image:alt" content={heroImageAlt} />}
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    {(safeStructuredData || websiteData) && <script type="application/ld+json" set:html={safeStructuredData || websiteData} />}
+    <meta name="color-scheme" content="dark light" />
+    <link rel="alternate" type="application/rss+xml" title={lang === 'bg' ? `${siteConfig.title} — RSS емисия` : `${siteConfig.title} — RSS feed`} href={new URL(lang === 'en' ? '/en/rss.xml' : '/rss.xml', siteConfig.site)} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <script is:inline>try{const t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{lang === 'bg' ? 'Към основното съдържание' : 'Skip to main content'}</a>
+    <div class="site-shell"><Header lang={lang} active={active} /><main id="main-content" tabindex="-1"><slot /></main><Footer lang={lang} /></div>
+    <ThemeToggle /><Navigation />
+  </body>
+</html>

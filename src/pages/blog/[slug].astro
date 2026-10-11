@@ -1,0 +1,13 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import type { Locale } from '../../lib/site';
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft && data.lang === 'bg');
+  return posts.map(post => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const lang = post.data.lang as Locale;
+const { Content } = await render(post);
+---
+<ArticleLayout post={post} lang={lang}><Content /></ArticleLayout>

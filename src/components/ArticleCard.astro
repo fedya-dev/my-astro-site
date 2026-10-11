@@ -1,0 +1,12 @@
+---
+import { dateLabel, localPath, ui, type Locale } from '../lib/site';
+const { post, lang = 'bg' } = Astro.props as { post: any; lang?: Locale };
+const t = ui[lang];
+---
+<article class="article-card">
+  {post.data.heroImage && <a class="card-image" href={localPath(lang, `blog/${post.id}`)}><img src={post.data.heroImage} alt={post.data.heroImageAlt || post.data.title} loading="lazy" /></a>}
+  <div class="card-meta"><span>{post.data.category}</span><time datetime={post.data.pubDate.toISOString()}>{dateLabel(post.data.pubDate, lang)}</time></div>
+  <h3><a href={localPath(lang, `blog/${post.id}`)}>{post.data.title}</a></h3>
+  <p>{post.data.description}</p>
+  <a class="text-link" href={localPath(lang, `blog/${post.id}`)}>{t.readMore} <span aria-hidden="true">↗</span></a>
+</article>

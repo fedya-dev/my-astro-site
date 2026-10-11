@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { slugify } from '../../../lib/site';
+
+const posts = await getCollection(
+  'blog',
+  ({ data }) => !data.draft && data.lang === 'en',
+);
+
+const categories = [
+  ...new Set(posts.map((post) => post.data.category)),
+].sort((a, b) => a.localeCompare(b, 'en'));
+---
+
+<BaseLayout title="Categories" description="Browse articles by category." lang="en">
+  <header class="page-intro">
+    <span class="eyebrow">Browse / Categories</span>
+    <h1>By <em>category.</em></h1>
+    <p>Choose a topic to explore related articles.</p>
+  </header>
+  <section class="section">
+    <div class="project-grid">
+      {categories.map((category) => (
+        <a class="project-card project-card-body" href={`/en/categories/${slugify(category)}/`}>
+          <span class="eyebrow">
+            {posts.filter((post) => post.data.category === category).length} articles
+          </span>
+          <h3>{category} ↗</h3>
+        </a>
+      ))}
+    </div>
+    {categories.length === 0 && <div class="empty-state">No categories yet.</div>}
+  </section>
+</BaseLayout>

@@ -1,0 +1,73 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import { getCollection } from 'astro:content';
+import { dateLabel, localPath, slugify, siteConfig, ui, type Locale } from '../lib/site';
+const { post, lang = 'bg' } = Astro.props as { post: any; lang?: Locale };
+const t = ui[lang];
+const publishedPosts = await getCollection('blog', ({ data }) => !data.draft);
+const translatedPosts = post.data.translationKey
+  ? publishedPosts.filter((candidate) => candidate.data.translationKey === post.data.translationKey)
+  : [];
+const alternateUrls = translatedPosts.map((candidate) => ({
+  lang: candidate.data.lang as Locale,
+  url: new URL(localPath(candidate.data.lang as Locale, `blog/${candidate.id}`), siteConfig.site).href,
+}));
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': new URL(localPath(lang, `blog/${post.id}`), siteConfig.site).href },
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: post.data.updatedDate?.toISOString(),
+  inLanguage: lang,
+  author: { '@type': post.data.author ? 'Person' : 'Organization', name: post.data.author || siteConfig.title },
+  publisher: { '@type': 'Organization', name: siteConfig.title },
+  image: post.data.heroImage ? new URL(post.data.heroImage, siteConfig.site).href : undefined,
+};
+const minutes = post.body ? Math.max(1, Math.ceil(post.body.split(/\s+/).filter(Boolean).length / 220)) : null;
+---
+<BaseLayout
+  title={post.data.title}
+  seoTitle={post.data.seoTitle}
+  description={post.data.description}
+  lang={lang}
+  active="blog"
+  heroImage={post.data.heroImage}
+  heroImageAlt={post.data.heroImageAlt}
+  ogType="article"
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate}
+  author={post.data.author}
+  alternateUrls={alternateUrls}
+  structuredData={structuredData}
+>
+  <div class="article-layout-grid">
+    <TableOfContents lang={lang} />
+    <article class="article-page">
+    <a class="back-link" href={localPath(lang, 'blog')}>← {t.back}</a>
+    <header class="article-header">
+      <div class="card-meta">
+        {post.data.category && <span>{post.data.category}</span>}
+        <time datetime={post.data.pubDate.toISOString()}>{dateLabel(post.data.pubDate, lang)}</time>
+        {post.data.updatedDate && post.data.updatedDate > post.data.pubDate && (
+          <span>{lang === 'bg' ? 'Обновена' : 'Updated'}: <time datetime={post.data.updatedDate.toISOString()}>{dateLabel(post.data.updatedDate, lang)}</time></span>
+        )}
+        {post.data.author && <span>{post.data.author}</span>}
+        {minutes && <span>{minutes} {t.minRead}</span>}
+      </div>
+      <h1>{post.data.title}</h1>
+      <p class="article-intro">{post.data.description}</p>
+      {post.data.heroImage && <img class="article-hero" src={post.data.heroImage} alt={post.data.heroImageAlt || post.data.title} fetchpriority="high" />}
+    </header>
+    <div class="prose"><slot /></div>
+    {post.data.tags?.length > 0 && (
+      <nav class="tag-list" aria-label={lang === 'bg' ? 'Тагове на статията' : 'Article tags'}>
+        {post.data.tags.map((tag: string) => <a class="tag" href={localPath(lang, `tags/${slugify(tag)}`)}>{tag}</a>)}
+      </nav>
+    )}
+    <div class="article-bottom"><a class="back-link" href={localPath(lang, 'blog')}>← {t.back}</a></div>
+    </article>
+  </div>
+</BaseLayout>

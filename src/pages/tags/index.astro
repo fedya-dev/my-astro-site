@@ -1,0 +1,8 @@
+---
+import { slugify } from '../../lib/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const posts = await getCollection('blog', ({data}) => !data.draft && data.lang === 'bg');
+const tags = [...new Set(posts.flatMap(post => post.data.tags))].sort((a,b) => a.localeCompare(b, 'bg'));
+---
+<BaseLayout title="Тагове" description="Разгледай статиите по тагове." lang="bg"><header class="page-intro"><span class="eyebrow">Каталог / Тагове</span><h1>Търси по <em>тема.</em></h1><p>Избери таг, за да намериш свързани публикации.</p></header><section class="section"><div class="tag-list">{tags.map(tag=><a class="tag" href={`/tags/${slugify(tag)}/`}>{tag}</a>)}</div>{tags.length===0&&<div class="empty-state">Все още няма тагове.</div>}</section></BaseLayout>

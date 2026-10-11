@@ -1,0 +1,9 @@
+---
+import { slugify } from '../../lib/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+export async function getStaticPaths(){const posts=await getCollection('blog',({data})=>!data.draft&&data.lang==='bg');const categories=[...new Set(posts.map(p=>p.data.category))];return categories.map(category=>({params:{slug:slugify(category)},props:{category,posts:posts.filter(p=>p.data.category===category).sort((a,b)=>b.data.pubDate.valueOf()-a.data.pubDate.valueOf())}}))}
+const {category,posts}=Astro.props;
+---
+<BaseLayout title={category} description={`Статии в категория ${category}.`} lang="bg" active="blog"><header class="page-intro"><a class="back-link" href="/categories/">← Всички категории</a><span class="eyebrow">Категория</span><h1>{category}</h1></header><section class="section"><div class="article-grid">{posts.map(post=><ArticleCard post={post} lang="bg"/>)}</div></section></BaseLayout>

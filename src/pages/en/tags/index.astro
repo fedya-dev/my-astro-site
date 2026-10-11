@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { slugify } from '../../../lib/site';
+
+const posts = await getCollection(
+  'blog',
+  ({ data }) => !data.draft && data.lang === 'en',
+);
+
+const tags = [
+  ...new Set(posts.flatMap((post) => post.data.tags)),
+].sort((a, b) => a.localeCompare(b, 'en'));
+---
+
+<BaseLayout title="Tags" description="Browse articles by tag." lang="en">
+  <header class="page-intro">
+    <span class="eyebrow">Browse / Tags</span>
+    <h1>Explore by <em>topic.</em></h1>
+  </header>
+  <section class="section">
+    <div class="tag-list">
+      {tags.map((tag) => <a class="tag" href={`/en/tags/${slugify(tag)}/`}>{tag}</a>)}
+    </div>
+    {tags.length === 0 && <div class="empty-state">No tags yet.</div>}
+  </section>
+</BaseLayout>

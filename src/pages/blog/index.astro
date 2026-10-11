@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+import { ui, type Locale } from '../../lib/site';
+const lang: Locale = 'bg';
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === lang)).sort((a,b) => b.data.pubDate.valueOf()-a.data.pubDate.valueOf());
+const t = ui[lang];
+---
+<BaseLayout title={t.blog} description="Статии, бележки и практически ръководства." lang={lang} active="blog">
+  <header class="page-intro"><span class="eyebrow">Статии / 01</span><h1>Идеи, превърнати в <em>практика.</em></h1><p>Практически ръководства, бележки и уроци от реалната работа.</p></header>
+  <section class="section"><div class="search-box"><input type="search" id="site-search" placeholder={t.searchPlaceholder} aria-label={t.search} /><span class="eyebrow" style="align-self:center">{posts.length} СТАТИИ</span></div><p class="search-status" id="search-status" aria-live="polite"></p><div class="article-grid" id="article-grid">{posts.map(post => <ArticleCard post={post} lang={lang} />)}</div>{posts.length===0 && <div class="empty-state">Все още няма публикувани статии. Добави Markdown файл в <code>src/content/blog/</code>.</div>}</section>
+  <script>
+    const input = document.querySelector<HTMLInputElement>('#site-search');
+    const cards = [...document.querySelectorAll<HTMLElement>('#article-grid .article-card')];
+    const status = document.querySelector<HTMLElement>('#search-status');
+    input?.addEventListener('input', () => {
+      const query = input.value.trim().toLocaleLowerCase(); let count = 0;
+      for (const card of cards) { const match = card.textContent?.toLocaleLowerCase().includes(query) ?? false; card.hidden = !match; if (match) count++; }
+      if (status) status.textContent = !query ? '' : count === 0 ? 'Няма намерени резултати.' : `Намерени резултати: ${count}`;
+    });
+  </script>
+</BaseLayout>

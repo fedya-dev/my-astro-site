@@ -1,0 +1,8 @@
+---
+import { slugify } from '../../lib/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const posts = await getCollection('blog', ({data}) => !data.draft && data.lang === 'bg');
+const categories = [...new Set(posts.map(post => post.data.category))].sort((a,b) => a.localeCompare(b, 'bg'));
+---
+<BaseLayout title="Категории" description="Разгледай статиите по категории." lang="bg"><header class="page-intro"><span class="eyebrow">Каталог / Категории</span><h1>По <em>категории.</em></h1><p>Избери тема, за да разгледаш свързаните публикации.</p></header><section class="section"><div class="project-grid">{categories.map(category => <a class="project-card project-card-body" href={`/categories/${slugify(category)}/`}><span class="eyebrow">{posts.filter(p=>p.data.category===category).length} статии</span><h3>{category} ↗</h3></a>)}</div>{categories.length===0&&<div class="empty-state">Все още няма категории.</div>}</section></BaseLayout>

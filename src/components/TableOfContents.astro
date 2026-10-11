@@ -1,0 +1,71 @@
+---
+import type { Locale } from '../lib/site';
+const { lang = 'bg' } = Astro.props as { lang?: Locale };
+const label = lang === 'bg' ? 'Съдържание на статията' : 'Table of contents';
+---
+<aside class="article-toc" data-toc aria-label={label} hidden>
+  <details class="toc-details" open>
+    <summary>{label}</summary>
+    <nav class="toc-nav" aria-label={label}>
+      <ol class="toc-list" data-toc-list></ol>
+    </nav>
+  </details>
+</aside>
+
+<script>
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  const list = toc?.querySelector<HTMLOListElement>('[data-toc-list]');
+  const article = document.querySelector<HTMLElement>('.prose');
+
+  if (toc && list && article) {
+    const headings = Array.from(article.querySelectorAll<HTMLElement>('h2, h3'));
+    const slugCounts = new Map<string, number>();
+    const slugifyHeading = (text: string) => text
+      .toLocaleLowerCase()
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\p{L}\p{N}]+/gu, '-')
+      .replace(/^-+|-+$/g, '') || 'section';
+
+    headings.forEach((heading) => {
+      const base = slugifyHeading(heading.textContent ?? '');
+      const count = slugCounts.get(base) ?? 0;
+      slugCounts.set(base, count + 1);
+      if (!heading.id) heading.id = count ? `${base}-${count + 1}` : base;
+
+      const item = document.createElement('li');
+      if (heading.tagName === 'H3') item.classList.add('toc-subitem');
+      const link = document.createElement('a');
+      link.href = `#${heading.id}`;
+      link.textContent = heading.textContent?.trim() ?? '';
+      link.addEventListener('click', () => {
+        if (window.matchMedia('(max-width: 850px)').matches) {
+          toc.querySelector('details')?.removeAttribute('open');
+        }
+      });
+      item.append(link);
+      list.append(item);
+    });
+
+    if (headings.length >= 2) {
+      toc.hidden = false;
+      const details = toc.querySelector('details');
+      if (details && window.matchMedia('(max-width: 850px)').matches) details.open = false;
+
+      if ('IntersectionObserver' in window) {
+        const links = Array.from(list.querySelectorAll<HTMLAnchorElement>('a'));
+        const linkById = new Map(links.map((link) => [decodeURIComponent(link.hash.slice(1)), link]));
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              links.forEach((link) => link.removeAttribute('aria-current'));
+              const active = linkById.get((entry.target as HTMLElement).id);
+              active?.setAttribute('aria-current', 'location');
+            }
+          });
+        }, { rootMargin: '-15% 0px -70% 0px' });
+        headings.forEach((heading) => observer.observe(heading));
+      }
+    }
+  }
+</script>

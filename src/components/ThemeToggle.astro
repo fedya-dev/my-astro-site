@@ -1,0 +1,18 @@
+<script>
+const root = document.documentElement;
+const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+const icon = document.querySelector<HTMLElement>('[data-theme-icon]');
+function applyTheme(theme: 'dark' | 'light') {
+  root.dataset.theme = theme;
+  if (icon) icon.textContent = theme === 'dark' ? '☼' : '☾';
+  button?.setAttribute('aria-pressed', String(theme === 'light'));
+}
+let saved: string | null = null;
+try { saved = localStorage.getItem('theme'); } catch { /* storage may be unavailable */ }
+applyTheme(saved === 'light' || saved === 'dark' ? saved : (root.dataset.theme === 'light' ? 'light' : 'dark'));
+button?.addEventListener('click', () => {
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem('theme', next); } catch { /* keep the current-page choice */ }
+});
+</script>

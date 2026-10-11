@@ -1,0 +1,21 @@
+---
+import { localPath, siteConfig, ui, type Locale } from '../lib/site';
+const { lang = 'bg', active = '' } = Astro.props as { lang?: Locale; active?: string };
+const t = ui[lang];
+---
+<header class="site-header">
+  <a class="brand" href={localPath(lang)} aria-label={lang === 'bg' ? `${t.home} — към началото` : `${t.home} — home`}>
+    <span class="brand-mark" aria-hidden="true">FS</span>
+    <span class="brand-name">{siteConfig.title}<small>{lang === 'bg' ? 'Блог / Практични знания' : 'Blog / Practical knowledge'}</small></span>
+  </a>
+  <nav id="primary-navigation" class="main-nav" aria-label={lang === 'bg' ? 'Основна навигация' : 'Main navigation'}>
+    <a class:list={{ active: active === 'home' }} href={localPath(lang)}>{t.home}</a>
+    <a class:list={{ active: active === 'blog' }} href={localPath(lang, 'blog')}>{t.blog}</a>
+    <a class:list={{ active: active === 'about' }} href={localPath(lang, 'about')}>{t.about}</a>
+  </nav>
+  <div class="header-actions">
+    <a class="lang-switch" href={lang === 'bg' ? '/en/' : '/'} aria-label={t.language}>{lang === 'bg' ? 'EN' : 'БГ'}</a>
+    <button class="icon-button" data-theme-toggle aria-label={t.theme} title={t.theme}><span data-theme-icon>☼</span></button>
+    <button class="icon-button menu-toggle" data-menu-toggle aria-label={lang === 'bg' ? 'Отвори менюто' : 'Open menu'} aria-expanded="false" aria-controls="primary-navigation">☰</button>
+  </div>
+</header>
