@@ -71,3 +71,9 @@ main:focus { outline: none; }
 :root[data-design="ocean"] .article-toc{border-radius:16px;box-shadow:var(--shadow)}
 :root[data-design="ocean"] .tag{border-radius:999px;background:var(--surface-2);border-color:transparent}
 :root[data-design="ocean"] .site-footer{border-top:1px solid var(--line)}
+
+/* Improve navigation contrast on hover in Midnight theme */
+:root:not([data-design="ocean"]) .main-nav a:hover,
+:root:not([data-design="ocean"]) .main-nav a:focus-visible {
+  color: var(--accent);
+}
