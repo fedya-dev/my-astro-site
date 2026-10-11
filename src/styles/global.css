@@ -77,3 +77,9 @@ main:focus { outline: none; }
 :root:not([data-design="ocean"]) .main-nav a:focus-visible {
   color: var(--accent);
 }
+
+/* Fix navigation hover contrast */
+.main-nav a:hover,
+.main-nav a:focus-visible {
+  color: var(--accent) !important;
+}
